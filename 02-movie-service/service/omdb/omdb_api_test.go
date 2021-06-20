@@ -30,7 +30,7 @@ func MockHTTP(method, url string, responseBodyData interface{}) {
 	})
 }
 
-func TestNewBarracudaService(t *testing.T) {
+func TestNewService(t *testing.T) {
 	type env struct {
 		key   string
 		value string

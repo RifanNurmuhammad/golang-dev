@@ -38,13 +38,13 @@ func NewOmdbService(repoDb *component.Mysql) (Omdb, error) {
 
 	omdbservice.key, ok = os.LookupEnv("OMDB_KEY")
 	if !ok {
-		err := errors.New("you need to specify BARRACUDA_BASIC_AUTH in the environment variable")
+		err := errors.New("you need to specify OMDB_KEY in the environment variable")
 		return nil, err
 	}
 
 	baseURL, ok := os.LookupEnv("OMDB_URL")
 	if !ok {
-		err := errors.New("you need to specify BARRACUDA_BASE_URL in the environment variable")
+		err := errors.New("you need to specify OMDB_URL in the environment variable")
 		return nil, err
 	}
 
