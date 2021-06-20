@@ -1,0 +1,57 @@
+
+syntax = "proto3";
+
+option go_package = "github.com/rifannurmuhammad/02-movie-service/src/movie/proto";
+
+package movie;
+
+message MovieQuery {
+    string Pagination = 1;
+    string SearchWord = 2;
+}
+
+message MovieDetailQuery {
+    string ID = 1;
+}
+
+message MovieList {
+    string Title = 1;
+    string Year = 2;
+    string ImdbID = 3;
+    string Type = 4;
+    string Poster = 5;
+}
+
+message MovieDetail {
+	string Title    = 1;  
+    string Year      = 2;
+    string Rated     = 3;
+    string Released  = 4;
+    string Runtime   = 5;
+    string Genre     = 6;
+    string Director  = 7;
+    string Writer    = 8;
+    string Actors    = 9;
+    string Plot      = 10;
+    string Language  = 11;
+    string Country   = 12;
+    string Awards    = 13;
+    string Poster    = 14;
+	string MetaScore  =15;
+    string ImdbRating= 16;
+    string ImdbVotes = 17;
+    string ImdbID    = 18;
+    string Type      = 19;
+    string DVD       = 20;
+    string BoxOffice = 21;
+    string Production= 22;
+    string Website   = 23;
+}
+
+message ResponseMovieList {
+    repeated MovieList movie =1;
+}
+service MovieService {
+    rpc getMovie (MovieQuery) returns (ResponseMovieList);
+    rpc getMovieDetail (MovieDetailQuery) returns (MovieDetail);
+}
