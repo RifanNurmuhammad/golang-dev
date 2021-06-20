@@ -8,6 +8,10 @@ import (
 	"net/url"
 	"os"
 
+	"github.com/rifannurmuhammad/02-movie-service/component"
+	logDomain "github.com/rifannurmuhammad/02-movie-service/src/log/domain"
+	logRepo "github.com/rifannurmuhammad/02-movie-service/src/log/repository"
+
 	"github.com/rifannurmuhammad/02-movie-service/shared"
 )
 
@@ -19,12 +23,13 @@ type Omdb interface {
 
 // omdbService data structure for baracuda receiver
 type omdbService struct {
-	baseURL *url.URL
-	key     string
+	baseURL       *url.URL
+	key           string
+	logRepository *logRepo.Repository
 }
 
 // NewOmdbService function for initializing omdb service
-func NewOmdbService() (Omdb, error) {
+func NewOmdbService(repoDb *component.Mysql) (Omdb, error) {
 	var (
 		err         error
 		ok          bool
@@ -49,6 +54,7 @@ func NewOmdbService() (Omdb, error) {
 		return nil, err
 	}
 
+	omdbservice.logRepository = logRepo.NewRepository(repoDb)
 	return omdbservice, nil
 }
 
@@ -65,6 +71,8 @@ func (omdb *omdbService) Find(search string, page int) (ResponseOmdb, error) {
 		return responseOmdb, err
 	}
 
+	go omdb.logRepository.LogActivities.Insert(context.Background(), &logDomain.LogActivities{SearchCall: uri})
+
 	if responseOmdb.Response == "False" {
 		return responseOmdb, errors.New(responseOmdb.Error)
 	}
@@ -80,6 +88,8 @@ func (omdb *omdbService) FindDetail(id string) (ResponseDetailOmdb, error) {
 	if err != nil {
 		return responseDetail, err
 	}
+
+	go omdb.logRepository.LogActivities.Insert(context.Background(), &logDomain.LogActivities{SearchCall: uri})
 
 	if responseDetail.Response == "False" {
 		return responseDetail, errors.New(responseDetail.Error)

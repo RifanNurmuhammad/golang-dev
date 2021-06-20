@@ -4,6 +4,9 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/rifannurmuhammad/02-movie-service/component"
+	mysqlConfig "github.com/rifannurmuhammad/02-movie-service/config/mysql"
+
 	rpc "github.com/rifannurmuhammad/02-movie-service/grpc/server"
 	servicePackage "github.com/rifannurmuhammad/02-movie-service/service"
 	movieDeliveryPackage "github.com/rifannurmuhammad/02-movie-service/src/movie/delivery"
@@ -15,8 +18,8 @@ const GRPCDefaultPort = 6565
 
 // GRPCMain entry function for initializing GRPC Server
 func (s *Service) GRPCMain() {
-
-	serviceModule := servicePackage.NewService()
+	dbConnection := &component.Mysql{Write: mysqlConfig.LoadMysqlDB(), Read: mysqlConfig.LoadMysqlDB()}
+	serviceModule := servicePackage.NewService(dbConnection)
 	movieUseCase := movieUsecasePackage.NewMovieUsecase(serviceModule)
 	movieGrpcHandler := movieDeliveryPackage.NewGrpcHandler(movieUseCase)
 

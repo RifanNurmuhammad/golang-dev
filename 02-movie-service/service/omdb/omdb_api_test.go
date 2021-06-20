@@ -7,7 +7,11 @@ import (
 	"testing"
 
 	"github.com/jarcoal/httpmock"
+	"github.com/rifannurmuhammad/02-movie-service/component"
 	"github.com/stretchr/testify/assert"
+	sqlMock "gopkg.in/DATA-DOG/go-sqlmock.v1"
+	"gorm.io/driver/mysql"
+	"gorm.io/gorm"
 )
 
 var (
@@ -71,7 +75,10 @@ func TestNewBarracudaService(t *testing.T) {
 				os.Setenv(env.key, env.value)
 			}
 
-			_, err := NewOmdbService()
+			db, _, _ := sqlMock.New()
+			defer db.Close()
+			gdb, err := gorm.Open(mysql.New(mysql.Config{Conn: db}), &gorm.Config{})
+			_, err = NewOmdbService(&component.Mysql{Write: gdb, Read: gdb})
 			if (err != nil) != tt.wantErr {
 				t.Errorf("\x1b[31;NewOmdbService() error = %v, wantErr %v\x1b[0m", err, tt.wantErr)
 			}
@@ -121,7 +128,10 @@ func Test_omdb_Find(t *testing.T) {
 		MockHTTP(http.MethodGet, url, tt.expectedResponse)
 
 		t.Run(tt.name, func(t *testing.T) {
-			service, err := NewOmdbService()
+			db, _, _ := sqlMock.New()
+			defer db.Close()
+			gdb, err := gorm.Open(mysql.New(mysql.Config{Conn: db}), &gorm.Config{})
+			service, err := NewOmdbService(&component.Mysql{Write: gdb, Read: gdb})
 			if err != nil {
 				assert.Error(t, err)
 			}
@@ -171,7 +181,10 @@ func Test_omdb_FindDetail(t *testing.T) {
 		MockHTTP(http.MethodGet, url, tt.expectedResponse)
 
 		t.Run(tt.name, func(t *testing.T) {
-			service, err := NewOmdbService()
+			db, _, _ := sqlMock.New()
+			defer db.Close()
+			gdb, err := gorm.Open(mysql.New(mysql.Config{Conn: db}), &gorm.Config{})
+			service, err := NewOmdbService(&component.Mysql{Write: gdb, Read: gdb})
 			if err != nil {
 				assert.Error(t, err)
 			}

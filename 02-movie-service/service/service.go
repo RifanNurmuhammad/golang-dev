@@ -3,6 +3,7 @@ package service
 import (
 	"fmt"
 
+	"github.com/rifannurmuhammad/02-movie-service/component"
 	"github.com/rifannurmuhammad/02-movie-service/service/omdb"
 )
 
@@ -18,11 +19,11 @@ type Service struct {
 }
 
 // NewService construct common service
-func NewService() *Service {
+func NewService(repoDb *component.Mysql) *Service {
 	var err error
 	srv := new(Service)
 
-	srv.Omdb, err = omdb.NewOmdbService()
+	srv.Omdb, err = omdb.NewOmdbService(repoDb)
 	if err != nil {
 		err = fmt.Errorf("Panic. Cannot load service, please check environment. Error: %v", err)
 	}
