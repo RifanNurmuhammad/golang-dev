@@ -21,7 +21,7 @@ type Omdb interface {
 	FindDetail(id string) (ResponseDetailOmdb, error)
 }
 
-// omdbService data structure for baracuda receiver
+// omdbService data structure for receiver
 type omdbService struct {
 	baseURL       *url.URL
 	key           string
